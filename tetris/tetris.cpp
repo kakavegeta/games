@@ -10,8 +10,8 @@ using namespace sf;
 
 const int screenWidth = 80;
 const int screenHeight = 30;
-const int fieldWidth = 12;
-const int fieldHeight = 18;
+const int fieldWidth = 10;
+const int fieldHeight = 20;
 
 
 int shapes[7][4] = {
@@ -51,16 +51,16 @@ int main () {
 
     RenderWindow window(VideoMode(320, 480), "The game!");
     Texture t1, t2, t3;
-    t1.loadFromFile("images/title.png");
+    t1.loadFromFile("images/tiles.png");
     t2.loadFromFile("images/bg.png");
     t3.loadFromFile("images/frame.png");
 
-    Sprite s(t1), background(t2), frame(t3);
+    Sprite s(t1);
 
     int dx = 0;
     bool rotate = false;
     int color = 1;
-    float timer=0, delay=0.5;
+    float timer=0, delay=0.3;
 
     Clock clock;
 
@@ -88,7 +88,7 @@ int main () {
         }
         
         // Moves make tetro be out of boundary will be ignored
-        if (!check) {
+        if (!check()) {
             for (int i=0; i<4; ++i) tetro[i] = tetro_[i];
         }
 
@@ -114,13 +114,14 @@ int main () {
             if (!check()) {
                 for (int i=0; i<4; ++i) {
                     field[tetro_[i].y][tetro_[i].x] = color;
-                    color = 1 + rand()%7; // change color
-                    int n = rand()%7;
-                    for (int i=0; i<4; ++i) {
-                        tetro[i].x = shapes[n][i] % 2;
-                        tetro[i].y = shapes[n][i] / 2;
-                    }
-               }
+                }
+                color = 1 + rand()%7; // change color
+                int n = rand()%7;
+                for (int i=0; i<4; ++i) {
+                    tetro[i].x = shapes[n][i] % 2;
+                    tetro[i].y = shapes[n][i] / 2;
+                }
+               
             }
             timer = 0;
         }
@@ -138,11 +139,10 @@ int main () {
         // re-initialize
         dx = 0;
         rotate = false;
-        delay = 0.5;
+        delay = 0.3;
 
         // draw
         window.clear(Color::White);
-        window.draw(background);
 
         for (int i=0; i<fieldHeight; ++i) {
             for (int j=0; j<fieldWidth; ++j) {
@@ -161,7 +161,6 @@ int main () {
             window.draw(s);
         }
         
-        window.draw(frame);
         window.display();
     }
 
